@@ -212,12 +212,12 @@ Import-Module Az.CosmosDB
 
 #download the git repo...
 Write-Host "Download Git repo." -ForegroundColor Green -Verbose
-git clone https://github.com/SpektraSystems/azure-synapse-analytics-workshop-400.git synapse-ws-L400
+git clone https://github.com/PraveenAnil/azure-synapse-analytics-workshop-400.git synapse-ws-L400
 
 $LabFilesDirectory = "C:\LabFiles"
 
 $WebClient = New-Object System.Net.WebClient
-$WebClient.DownloadFile("https://raw.githubusercontent.com/SpektraSystems/azure-synapse-analytics-workshop-400/master/artifacts/environment-setup/spektra/logontask.ps1","C:\LabFiles\logontask.ps1")
+$WebClient.DownloadFile("https://raw.githubusercontent.com/PraveenAnil/azure-synapse-analytics-workshop-400/master/artifacts/environment-setup/spektra/logontask.ps1","C:\LabFiles\logontask.ps1")
 
 #Enable Autologon
 $AutoLogonRegPath = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon"
