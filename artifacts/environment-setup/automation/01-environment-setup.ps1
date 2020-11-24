@@ -2,7 +2,6 @@ $InformationPreference = "Continue"
 
 $IsCloudLabs = Test-Path C:\LabFiles\AzureCreds.ps1;
 
-if($IsCloudLabs){
         if(Get-Module -Name solliance-synapse-automation){
                 Remove-Module solliance-synapse-automation
         }
@@ -27,7 +26,7 @@ if($IsCloudLabs){
         $userName = $AzureUserName                # READ FROM FILE
         $password = $AzurePassword                # READ FROM FILE
         $clientId = $TokenGeneratorClientId       # READ FROM FILE
-        #$global:sqlPassword = $AzureSQLPassword          # READ FROM FILE
+        $global:sqlPassword = $AzureSQLPassword          # READ FROM FILE
 
         $securePassword = $password | ConvertTo-SecureString -AsPlainText -Force
         $cred = new-object -typename System.Management.Automation.PSCredential -argumentlist $userName, $SecurePassword
@@ -54,41 +53,7 @@ if($IsCloudLabs){
         $dataflowsPath = "..\dataflows"
         $pipelinesPath = "..\pipelines"
         $sqlScriptsPath = "..\sql"
-} else {
-        if(Get-Module -Name solliance-synapse-automation){
-                Remove-Module solliance-synapse-automation
-        }
-        Import-Module "..\solliance-synapse-automation"
 
-        #Different approach to run automation in Cloud Shell
-        $subs = Get-AzSubscription | Select-Object -ExpandProperty Name
-        if($subs.GetType().IsArray -and $subs.length -gt 1){
-                $subOptions = [System.Collections.ArrayList]::new()
-                for($subIdx=0; $subIdx -lt $subs.length; $subIdx++){
-                        $opt = New-Object System.Management.Automation.Host.ChoiceDescription "$($subs[$subIdx])", "Selects the $($subs[$subIdx]) subscription."   
-                        $subOptions.Add($opt)
-                }
-                $selectedSubIdx = $host.ui.PromptForChoice('Enter the desired Azure Subscription for this lab','Copy and paste the name of the subscription to make your choice.', $subOptions.ToArray(),0)
-                $selectedSubName = $subs[$selectedSubIdx]
-                Write-Information "Selecting the $selectedSubName subscription"
-                Select-AzSubscription -SubscriptionName $selectedSubName
-        }
-
-        $resourceGroupName = Read-Host "Enter the resource group name";
-        
-        $userName = ((az ad signed-in-user show) | ConvertFrom-JSON).UserPrincipalName
-        
-        #$global:sqlPassword = Read-Host -Prompt "Enter the SQL Administrator password you used in the deployment" -AsSecureString
-        #$global:sqlPassword = [System.Runtime.InteropServices.Marshal]::PtrToStringUni([System.Runtime.InteropServices.Marshal]::SecureStringToCoTaskMemUnicode($sqlPassword))
-
-        $artifactsPath = "..\..\"
-        $reportsPath = "..\reports"
-        $templatesPath = "..\templates"
-        $datasetsPath = "..\datasets"
-        $dataflowsPath = "..\dataflows"
-        $pipelinesPath = "..\pipelines"
-        $sqlScriptsPath = "..\sql"
-}
 
 Write-Information "Using $resourceGroupName";
 
@@ -151,7 +116,7 @@ Set-AzKeyVaultAccessPolicy -ResourceGroupName $resourceGroupName -VaultName $key
 Set-AzKeyVaultAccessPolicy -ResourceGroupName $resourceGroupName -VaultName $keyVaultName -ObjectId $id -PermissionsToSecrets set,delete,get,list
 
 #remove need to ask for the password in script.
-$global:sqlPassword = $(Get-AzKeyVaultSecret -VaultName $keyVaultName -Name "SqlPassword").SecretValueText
+#$global:sqlPassword = $(Get-AzKeyVaultSecret -VaultName $keyVaultName -Name "SqlPassword").SecretValueText
 
 Write-Information "Create SQL-USER-ASA Key Vault Secret"
 $secretValue = ConvertTo-SecureString $sqlPassword -AsPlainText -Force
