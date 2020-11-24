@@ -39,9 +39,9 @@ function InstallAzureCli()
   Write-Host "Installing Azure CLI." -ForegroundColor Green -Verbose
 
   #install azure cli
-  Invoke-WebRequest -Uri https://aka.ms/installazurecliwindows -OutFile .\AzureCLI.msi -usebasicparsing; 
-  Start-Process msiexec.exe -Wait -ArgumentList '/I AzureCLI.msi /quiet'; 
-  rm .\AzureCLI.msi
+  Invoke-WebRequest -Uri https://aka.ms/installazurecliwindows -OutFile C:\AzureCLI.msi -usebasicparsing; 
+  Start-Process msiexec.exe -Wait -ArgumentList '/I C:\AzureCLI.msi /quiet'; 
+  rm C:\AzureCLI.msi
 }
 
 #Disable-InternetExplorerESC
